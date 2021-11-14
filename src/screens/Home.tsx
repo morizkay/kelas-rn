@@ -1,7 +1,14 @@
 import React from "react";
 import { Button, Pressable, StyleSheet, Text, View } from "react-native";
+import NetInfo from "@react-native-community/netinfo";
 
 const HomeScreen = ({ navigation }: any) => {
+  React.useEffect(() => {
+    NetInfo.fetch().then((state) => {
+      console.log("Connection type", state.type);
+      console.log("Is connected?", state.isConnected);
+    });
+  }, [NetInfo]);
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Pressable

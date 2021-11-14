@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Modal from "react-native-modal";
+import { nanoid } from "nanoid";
 
 const logistics = [
   {
@@ -28,14 +29,21 @@ const logistics = [
 
 const LogisticHome = ({ navigation }: any) => {
   const [data, setData] = React.useState(logistics);
+  const [province, setProvince] = React.useState("");
+  const [city, setCity] = React.useState("");
   const [isModalVisible, setModalVisible] = React.useState(false);
-
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
   const onSave = async () => {
-    toggleModal();
+    console.log(nanoid(), { province, city });
+
+    try {
+      await AsyncStorage.setItem(nanoid(), JSON.stringify({ province, city }));
+      const keys = await AsyncStorage.getAllKeys();
+    } catch (error) {}
+    await toggleModal();
   };
 
   return (
@@ -43,18 +51,37 @@ const LogisticHome = ({ navigation }: any) => {
       <Pressable style={styles.addDataButton} onPress={toggleModal}>
         <Text style={styles.addDataText}>Add New Data</Text>
       </Pressable>
+      <Pressable
+        style={styles.addDataButton}
+        onPress={() => {
+          navigation.navigate("LogisticStorage");
+        }}
+      >
+        <Text style={styles.addDataText}>Async Storage</Text>
+      </Pressable>
       <Modal isVisible={isModalVisible}>
         <View style={styles.addDataModalContainer}>
           <View style={styles.addDataModalInputContainer}>
             <Text style={styles.addDataModalTextLabel}>Province's Name</Text>
-            <TextInput style={styles.addDataModalTextInput} />
+            <TextInput
+              style={styles.addDataModalTextInput}
+              value={province}
+              onChangeText={setProvince}
+            />
           </View>
           <View style={styles.addDataModalInputContainer}>
             <Text style={styles.addDataModalTextLabel}>City's Name</Text>
-            <TextInput style={styles.addDataModalTextInput} />
+            <TextInput
+              style={styles.addDataModalTextInput}
+              value={city}
+              onChangeText={setCity}
+            />
           </View>
           <View style={styles.addDataModalActionContainer}>
-            <Pressable style={styles.addDataModalActionSaveButton}>
+            <Pressable
+              style={styles.addDataModalActionSaveButton}
+              onPress={onSave}
+            >
               <Text style={styles.addDataModalActionSaveButtonText}>SAVE</Text>
             </Pressable>
             <Pressable
@@ -203,8 +230,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    borderWidth: 1,
+    borderColor: "#ccc",
     marginBottom: 10,
     textAlign: "center",
     color: "#000",
