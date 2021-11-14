@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
-const LogisticStorage = () => {
+const LogisticStorage = ({ navigation }: any) => {
   const [keys, setKeys] = React.useState<any[]>();
 
   const getAllData = async () => {
@@ -19,6 +19,13 @@ const LogisticStorage = () => {
   }, []);
   return (
     <View>
+      <Pressable
+        onPress={() => {
+          navigation.navigate("LogisticStorageData");
+        }}
+      >
+        <Text>Logistic Storage Renderer</Text>
+      </Pressable>
       {keys &&
         keys.map(
           (

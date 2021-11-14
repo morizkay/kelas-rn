@@ -14,6 +14,7 @@ import PokemonDetail from "./src/screens/pokemons/PokemonDetail";
 import PokemonHome from "./src/screens/pokemons/PokemonHome";
 import HomeScreen from "./src/screens/Home";
 import LogisticStorage from "./src/screens/logistics/LogisticStorage";
+import LogisticStorageData from "./src/screens/logistics/LogisticStorageData";
 
 const Stack = createNativeStackNavigator();
 
@@ -37,9 +38,8 @@ const App = () => {
     <ApolloProvider client={apolloClient}>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="LogisticStorage">
+          <Stack.Navigator initialRouteName="LogisticStorageData">
             <Stack.Screen name="Home" component={HomeScreen} />
-
             <Stack.Screen
               name="LogisticHome"
               component={LogisticHome}
@@ -61,6 +61,13 @@ const App = () => {
                 headerTitle: "Logistic's Storage",
               }}
             />
+            <Stack.Screen
+              name="LogisticStorageData"
+              component={LogisticStorageData}
+              options={{
+                headerTitle: "Logistic's Storage Data Renderer",
+              }}
+            />
 
             <Stack.Screen
               name="MovieHome"
@@ -76,7 +83,6 @@ const App = () => {
                 headerTitle: "Movie's Detail",
               }}
             />
-
             <Stack.Screen
               name="PokemonHome"
               component={PokemonHome}

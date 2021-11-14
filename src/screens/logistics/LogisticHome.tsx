@@ -37,13 +37,10 @@ const LogisticHome = ({ navigation }: any) => {
   };
 
   const onSave = async () => {
-    console.log(nanoid(), { province, city });
-
     try {
       await AsyncStorage.setItem(nanoid(), JSON.stringify({ province, city }));
-      const keys = await AsyncStorage.getAllKeys();
     } catch (error) {}
-    await toggleModal();
+    toggleModal();
   };
 
   return (
