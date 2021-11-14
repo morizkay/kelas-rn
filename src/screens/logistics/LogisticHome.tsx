@@ -12,7 +12,7 @@ import Modal from "react-native-modal";
 import "react-native-get-random-values";
 import { nanoid } from "nanoid";
 
-const LogisticHome = ({ navigation }: any) => {
+const LogisticHome = () => {
   const [province, setProvince] = React.useState("");
   const [city, setCity] = React.useState("");
   const [isModalVisible, setModalVisible] = React.useState(false);
