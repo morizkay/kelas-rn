@@ -2,7 +2,6 @@ import React from "react";
 import {
   FlatList,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -10,35 +9,54 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Modal from "react-native-modal";
+import "react-native-get-random-values";
 import { nanoid } from "nanoid";
 
-const logistics = [
-  {
-    id: 1,
-    item: "Book",
-    province: "DKI Jakarta",
-    city: "Jakarta",
-  },
-  {
-    id: 2,
-    item: "Book",
-    province: "West Java",
-    city: "Bandung",
-  },
-];
-
 const LogisticHome = ({ navigation }: any) => {
-  const [data, setData] = React.useState(logistics);
   const [province, setProvince] = React.useState("");
   const [city, setCity] = React.useState("");
   const [isModalVisible, setModalVisible] = React.useState(false);
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+  const [logisticData, setLogisticData] = React.useState<any>([]);
+  const [loading, setLoading] = React.useState(true);
+
+  const getData = async (key: string) => {
+    const data = await AsyncStorage.getItem(key);
+    if (data) {
+      const newItem = { key, data: JSON.parse(data) };
+      setLogisticData((prevState: any) => [...prevState, newItem]);
+    }
+  };
+
+  const deleteData = async (key: string) => {
+    await AsyncStorage.removeItem(key);
+    getAllKeys();
+  };
+
+  const getAllKeys = async () => {
+    setLogisticData([]);
+    setLoading(true);
+    AsyncStorage.getAllKeys()
+      .then((keys) => {
+        keys.forEach((key) => {
+          getData(key);
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  React.useEffect(() => {
+    getAllKeys();
+  }, []);
 
   const onSave = async () => {
     try {
       await AsyncStorage.setItem(nanoid(), JSON.stringify({ province, city }));
+      getAllKeys();
     } catch (error) {}
     toggleModal();
   };
@@ -48,13 +66,8 @@ const LogisticHome = ({ navigation }: any) => {
       <Pressable style={styles.addDataButton} onPress={toggleModal}>
         <Text style={styles.addDataText}>Add New Data</Text>
       </Pressable>
-      <Pressable
-        style={styles.addDataButton}
-        onPress={() => {
-          navigation.navigate("LogisticStorage");
-        }}
-      >
-        <Text style={styles.addDataText}>Async Storage</Text>
+      <Pressable style={styles.addDataButton} onPress={getAllKeys}>
+        <Text style={styles.addDataText}>Reload Data</Text>
       </Pressable>
       <Modal isVisible={isModalVisible}>
         <View style={styles.addDataModalContainer}>
@@ -92,38 +105,35 @@ const LogisticHome = ({ navigation }: any) => {
           </View>
         </View>
       </Modal>
-      {data.length === 0 ? (
+      {logisticData.length === 0 ? (
         <View style={styles.containerOfDataEmpty}>
           <Text style={styles.textOfDataEmpty}>No Data</Text>
         </View>
+      ) : loading ? (
+        <Text>Loading...</Text>
       ) : (
         <View style={styles.containerOfData}>
           <FlatList
             style={styles.flatList}
-            data={data}
+            data={logisticData}
             renderItem={({ item }) => (
-              <Pressable
-                onPress={() => {
-                  navigation.navigate("LogisticDetail", {
-                    id: item.id,
-                    item: item.item,
-                    province: item.province,
-                    city: item.city,
-                  });
-                }}
-              >
-                <View key={item.id} style={styles.containerOfDataItem}>
-                  <Text style={styles.textOfDataItem}>{item.item}</Text>
-                  <View style={styles.logisticArea}>
-                    <Text style={styles.textOfDataProvince}>
-                      {item.province} -{" "}
-                    </Text>
-                    <Text style={styles.textOfDataCity}>{item.city}</Text>
-                  </View>
+              <View key={item.id} style={styles.containerOfDataItem}>
+                <Text style={styles.textOfDataItem}>{item.item}</Text>
+                <View style={styles.logisticArea}>
+                  <Text style={styles.textOfDataProvince}>
+                    {item.data.province} -{" "}
+                  </Text>
+                  <Text style={styles.textOfDataCity}>{item.data.city}</Text>
                 </View>
-              </Pressable>
+                <Pressable
+                  style={styles.deleteItemButton}
+                  onPress={() => deleteData(item.key)}
+                >
+                  <Text style={styles.deleteItemButtonText}>Delete Item</Text>
+                </Pressable>
+              </View>
             )}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => item.key}
           />
         </View>
       )}
@@ -178,6 +188,7 @@ const styles = StyleSheet.create({
   logisticArea: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginBottom: 10,
   },
   textOfDataProvince: {
     fontSize: 15,
@@ -190,8 +201,11 @@ const styles = StyleSheet.create({
   },
 
   addDataButton: {
-    width: "100%",
+    width: "90%",
     height: 50,
+    marginHorizontal: "5%",
+    marginBottom: 10,
+    borderWidth: 1,
     backgroundColor: "#ccc",
     alignItems: "center",
     justifyContent: "center",
@@ -263,5 +277,17 @@ const styles = StyleSheet.create({
   addDataModalActionCancelButtonText: {
     fontSize: 20,
     fontWeight: "bold",
+  },
+  deleteItemButton: {
+    borderRadius: 10,
+    width: 100,
+    height: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "red",
+  },
+  deleteItemButtonText: {
+    fontSize: 15,
+    color: "#fff",
   },
 });
