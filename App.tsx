@@ -1,19 +1,16 @@
 // In App.js in a new project
 
 import * as React from "react";
-import { View, Text, Button } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { QueryClientProvider, QueryClient } from "react-query";
 import LogisticHome from "./src/screens/logistics/LogisticHome";
-import LogisticDetail from "./src/screens/logistics/LogisticDetail";
 import MovieDetail from "./src/screens/movies/MovieDetail";
 import MovieHome from "./src/screens/movies/MovieHome";
 import PokemonDetail from "./src/screens/pokemons/PokemonDetail";
 import PokemonHome from "./src/screens/pokemons/PokemonHome";
 import HomeScreen from "./src/screens/Home";
-import LogisticStorage from "./src/screens/logistics/LogisticStorage";
 
 const Stack = createNativeStackNavigator();
 
@@ -44,20 +41,6 @@ const App = () => {
               component={LogisticHome}
               options={{
                 headerTitle: "Logistics",
-              }}
-            />
-            <Stack.Screen
-              name="LogisticDetail"
-              component={LogisticDetail}
-              options={{
-                headerTitle: "Logistic's Detail",
-              }}
-            />
-            <Stack.Screen
-              name="LogisticStorage"
-              component={LogisticStorage}
-              options={{
-                headerTitle: "Logistic's Storage",
               }}
             />
 
