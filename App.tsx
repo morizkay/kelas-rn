@@ -1,16 +1,14 @@
-// In App.js in a new project
-
-import * as React from "react";
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import { QueryClientProvider, QueryClient } from "react-query";
+import * as React from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import HomeScreen from "./src/screens/Home";
 import LogisticHome from "./src/screens/logistics/LogisticHome";
 import MovieDetail from "./src/screens/movies/MovieDetail";
 import MovieHome from "./src/screens/movies/MovieHome";
 import PokemonDetail from "./src/screens/pokemons/PokemonDetail";
 import PokemonHome from "./src/screens/pokemons/PokemonHome";
-import HomeScreen from "./src/screens/Home";
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +16,7 @@ const apolloClient = new ApolloClient({
   uri: "https://graphql-pokeapi.graphcdn.app/",
   cache: new InMemoryCache(),
 });
+
 const queryClient = new QueryClient({
   defaultOptions: {
     mutations: {},
