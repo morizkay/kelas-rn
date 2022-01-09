@@ -6,6 +6,7 @@ const HomeScreen = ({ navigation }: any) => {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Pressable
+        testID="pressable-logistic"
         style={styles.button}
         onPress={() => navigation.navigate("LogisticHome")}
       >
